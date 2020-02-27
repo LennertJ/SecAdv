@@ -1,32 +1,24 @@
-function ChatBox1Message(){
-    //show message in left message box
-    let message = document.getElementById('textarea1').value;
-    document.getElementById('textarea1').value="";
-    displayMessageOrigin(1, message);
-    let hashedMessage = hashcode( message);
+var upload = document.getElementById('premade');
+upload.addEventListener('drop', DropFile, false);
+upload.addEventListener('dragover', DragFile, false);
 
-    // encript message
+var upload = document.getElementById('premade2');
+upload.addEventListener('drop', DropFile2, false);
+upload.addEventListener('dragover', DragFile, false);
 
-
-    //send encypted message
-    chatboxReceiveMessage(2, message, hashedMessage );
-}
-
-function ChatBox2Message(){
+function ChatBoxMessage(fromId, toId){
     //display message
-    let message = document.getElementById('textarea2').value;
-    displayMessageOrigin(2,message);
-    document.getElementById('textarea2').value="";
+    let message = document.getElementById('textarea' + fromId).value;
+    displayMessageOrigin(fromId ,message);
+    document.getElementById('textarea' + fromId).value="";
     let hashedMessage = hashcode( message);
 
     // encript message
 
 
     //send encypted message
-    chatboxReceiveMessage(1, message, hashedMessage );
+    chatboxReceiveMessage(toId, message, hashedMessage );
 }
-
-
 
 function displayMessageOrigin(id, message) {
     let messagefield = document.createElement("Div");
@@ -49,7 +41,6 @@ function displayMessageReceiver(idOfReceiver, message, hash) {
     document.getElementById("chatbox" + idOfReceiver).appendChild(messagefield);
 }
 
-
 function chatboxReceiveMessage(id ,message, hashedMessage) {
     //decrypt message
 
@@ -68,3 +59,29 @@ function chatboxReceiveMessage(id ,message, hashedMessage) {
 function hashcode(s){
     return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
   }
+
+function DragFile(evt){
+	evt.preventDefault();
+}
+
+function DropFile(evt){
+	//js magic (stops opening of file)
+    evt.preventDefault();
+	
+	var files = evt.dataTransfer.files; // get all files (not sure how to block multiple files)
+	var file = files[0];// take first file from list
+	document.getElementById("fileInfo").innerHTML = file.name + ", " + file.size + " bytes"; // show unnesecairy info just because
+}
+
+function DropFile2(evt){
+	//js magic (stops opening of file)
+    evt.preventDefault();
+	
+	var files = evt.dataTransfer.files; // get all files (not sure how to block multiple files)
+	var file = files[0];// take first file from list
+	document.getElementById("fileInfo2").innerHTML = file.name + ", " + file.size + " bytes"; // show unnesecairy info just because
+}
+
+function UploadMessage(fromId, toId){
+
+}

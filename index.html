@@ -8,14 +8,25 @@
     <div class="chatbox1" id="chatbox1">
         <h2>Chat Messages</h2>
         <textarea name="textarea1" id="textarea1" class="textArea"></textarea>
-        <button id="submit1" value="submit" onclick="ChatBox1Message()"> submit</button>
+        <button id="submit1" value="submit" onclick="ChatBoxMessage(1,2)"> submit</button>
+        <div id = "uploadform" class="uploadform">
+			<div type="file" class="premade" id="premade">
+                <p class="fileInfo" id="fileInfo"> send image</p>
+            </div>
+            <button id="submit1" value="submit" onclick="UploadMessage(1,2)"> submit</button>
+        </div>
     </div>
     <div class="chatbox2" id="chatbox2">
         <h2>Chat Messages</h2>
         <textarea name="textarea2" id="textarea2" class="textArea"></textarea>
-        <button id="submit2" value="submit" onclick="ChatBox2Message()"> submit</button>
+        <button id="submit2" value="submit" onclick="ChatBoxMessage(2,1)"> submit</button>
+        <div class="uploadform" id = "uploadform2" >
+			<div type="file" class="premade" id="premade2">
+                <p class="fileInfo" id="fileInfo2"> send image</p>
+            </div>
+            <button id="submit2" value="submit" onclick="UploadMessage(2,1)"> submit</button>
+        </div>
     </div>
-    <script type="text/javascript" src="hybrid-crypto.min.js"></script>
     <script type="text/javascript" src="messaging.js"></script>
 </body>
 </html>
