@@ -60,6 +60,19 @@ function displayMessageReceiver(idOfReceiver, message, hash) {
     document.getElementById("chatbox" + idOfReceiver).appendChild(messagefield);
 }
 
+function displayImageReceiver(id, hash) {
+    let messagefield = document.createElement("Div");
+    messagefield.className += "container darker";
+    let messageImage = document.createElement("img");
+    messageImage.id = "image" + imagecounter;
+    messageImage.src = cachedImage;
+    let hashcheck = document.createElement("P");
+    hashcheck.innerHTML = hash;
+    messagefield.appendChild(hashcheck);
+    messagefield.appendChild(messageImage);
+    document.getElementById("chatbox" + id).appendChild(messagefield);
+}
+
 function chatboxReceiveMessage(id ,message, hashedMessage) {
     //decrypt message
 
@@ -75,9 +88,62 @@ function chatboxReceiveMessage(id ,message, hashedMessage) {
     displayMessageReceiver(id, message, hash);
 }
 
+function chatboxReceiveImage(id ,filename , hashedMessage) {
+    //decrypt message
+
+    //✔ hash
+    let hash = "another error occured"
+    if(hashcode(filename) == hashedMessage){
+        hash = "hash matches, message received correctly (" + hashedMessage + ")"; 
+    }else{
+        hash = "hash doesn't match, expected hashvalue not met (" + hashedMessage + ")"; 
+    }
+
+    //display decrypted message
+    displayImageReceiver(id, hash);
+}
+
+function UploadMessage(fromId, toId){
+    let message = document.getElementById('textarea' + fromId).value;
+    displayImageOrigin(fromId);
+    imagecounter++;
+    let filename = document.getElementById("fileUpload" + fromId).value;
+    let hashedMessage = hashcode(filename);
+    chatboxReceiveImage(toId,filename, hashedMessage );
+}
+
 function hashcode(s){
     return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//stupid methods
 
 function DragFile(evt){
 	evt.preventDefault();
@@ -99,12 +165,4 @@ function DropFile2(evt){
 	var files = evt.dataTransfer.files; // get all files (not sure how to block multiple files)
 	var file = files[0];// take first file from list
 	document.getElementById("fileInfo2").innerHTML = file.name + ", " + file.size + " bytes"; // show unnesecairy info just because
-}
-
-function UploadMessage(fromId, toId){
-    let message = document.getElementById('textarea' + fromId).value;
-    displayImageOrigin(fromId);
-    imagecounter++;
-    let hashedMessage = hashcode( message);
-
 }
