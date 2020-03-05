@@ -1,10 +1,19 @@
-var upload = document.getElementById('premade');
-upload.addEventListener('drop', DropFile, false);
-upload.addEventListener('dragover', DragFile, false);
+//var upload = document.getElementById('premade');
+//upload.addEventListener('drop', DropFile, false);
+//upload.addEventListener('dragover', DragFile, false);
 
-var upload = document.getElementById('premade2');
-upload.addEventListener('drop', DropFile2, false);
-upload.addEventListener('dragover', DragFile, false);
+//var upload = document.getElementById('premade2');
+//upload.addEventListener('drop', DropFile2, false);
+//upload.addEventListener('dragover', DragFile, false);
+
+let imagecounter = 0;
+let cachedImage = "";
+
+var loadFile = function(event) {
+    //var output = document.getElementById('output');
+    //output.src = URL.createObjectURL(event.target.files[0]);
+    cachedImage = URL.createObjectURL(event.target.files[0]);
+  };
 
 function ChatBoxMessage(fromId, toId){
     //display message
@@ -26,6 +35,16 @@ function displayMessageOrigin(id, message) {
     let messageParagraph = document.createElement("P");
     messageParagraph.innerHTML = message;
     messagefield.appendChild(messageParagraph);
+    document.getElementById("chatbox" + id).appendChild(messagefield);
+}
+
+function displayImageOrigin(id) {
+    let messagefield = document.createElement("Div");
+    messagefield.className += "container";
+    let messageImage = document.createElement("img");
+    messageImage.id = "image" + imagecounter;
+    messageImage.src = cachedImage;
+    messagefield.appendChild(messageImage);
     document.getElementById("chatbox" + id).appendChild(messagefield);
 }
 
@@ -83,5 +102,9 @@ function DropFile2(evt){
 }
 
 function UploadMessage(fromId, toId){
+    let message = document.getElementById('textarea' + fromId).value;
+    displayImageOrigin(fromId);
+    imagecounter++;
+    let hashedMessage = hashcode( message);
 
 }
