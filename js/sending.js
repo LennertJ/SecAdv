@@ -1,3 +1,4 @@
+
 function ChatBoxMessage(fromId, toId){//main
     //display message
     let message = document.getElementById('textarea' + fromId).value;
