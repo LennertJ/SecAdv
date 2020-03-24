@@ -1,6 +1,15 @@
 let imagecounter = 0;
 let cachedImage = "";
 
+//Use these keys to generate key for aes;
+//keys are small to make it manageable
+const privateKeyBob  = 7; //sender1
+
+const privateKeyAlice= 5; //sender2
+
+const decidedKey= 2 ;
+
+
 {//send
 function ChatBoxMessage(fromId, toId){//main
     //display message
@@ -11,6 +20,21 @@ function ChatBoxMessage(fromId, toId){//main
     // encript message
     let hashedMessage = hashcode(message);
 
+    let senderKey = null;
+
+    if (fromId == 1){ 
+        senderKey = privateKeyBob; //A
+        receiverkey = askPrivateKey(fromId); //BG
+    }
+    else if(fromId == 2) {
+        senderKey = privateKeyAlice; //B
+        receiverkey = askPrivateKey(fromId); //AG
+    }
+    if(receiverkey == null || senderKey == null ){console.log("error while ecrypting, unknown ID");return;}
+
+    let sharedAESKey = generateAESKey(senderKey, receiverkey); //generateAESKey(A or B, AG or BG);
+
+    let encriptedMessage = AESencryptionMethod(sharedAESKey, message);
 
     //send encypted message
     chatboxReceiveMessage(toId, message, hashedMessage );
@@ -117,3 +141,26 @@ function hashcode(s){
 
 }
 
+{//DHKE
+function n(pk ,G , mod=7){
+    return Math.pow(G,pk) % mod;
+}
+
+function askPrivateKey(fromId,toId){
+    if (fromId == 1){ 
+        let privK = privateKeyBob;
+    }
+    else if(fromId = 2) {
+        let privK = privateKeyAlice;
+    }
+    else{
+         return null
+    }
+    return n(privK, decidedKey);
+}
+
+function AESencryptionMethod(key,message){
+    
+}
+
+}
