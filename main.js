@@ -3,7 +3,8 @@ let cachedImage = "";
 
 //Use these keys to generate key for aes;
 //keys are small to make it manageable
-const privateKeyBob  = 7; //sender1
+//no volotile keys tho, because that's hard to do manual
+const privateKeyBob  = 3; //sender1
 
 const privateKeyAlice= 5; //sender2
 
@@ -34,18 +35,36 @@ function ChatBoxMessage(fromId, toId){//main
 
     let sharedAESKey = generateAESKey(senderKey, receiverkey); //generateAESKey(A or B, AG or BG);
 
-    let encriptedMessage = AESencryptionMethod(sharedAESKey, message);
+    let encriptedMessage = encryptWithAes( message,sharedAESKey);
 
     //send encypted message
-    chatboxReceiveMessage(toId, message, hashedMessage );
+    chatboxReceiveMessage(toId, encriptedMessage , hashedMessage );
 }
 
 function UploadMessage(fromId, toId){
+    //display message 
     let filename = document.getElementById("fileUpload" + fromId).value;
     if(filename == ""){return};
     displayImageOrigin(fromId);
+    // encript message
     let hashedMessage = hashcode(filename);
-    chatboxReceiveImage(toId,filename, hashedMessage );
+
+    if (fromId == 1){ 
+        senderKey = privateKeyBob; //A
+        receiverkey = askPrivateKey(fromId); //BG
+    }
+    else if(fromId == 2) {
+        senderKey = privateKeyAlice; //B
+        receiverkey = askPrivateKey(fromId); //AG
+    }
+    if(receiverkey == null || senderKey == null ){console.log("error while ecrypting, unknown ID");return;}
+
+    let sharedAESKey = generateAESKey(senderKey, receiverkey); //generateAESKey(A or B, AG or BG);
+
+    let encriptedFilename = encryptWithAes( filename,sharedAESKey);
+
+    //send message
+    chatboxReceiveImage(toId,encriptedFilename, hashedMessage );
     imagecounter++;
     document.getElementById("fileUpload" + fromId).value = "";
     cachedImage = "";
@@ -53,9 +72,21 @@ function UploadMessage(fromId, toId){
 }
 
 {//recieve
-function chatboxReceiveMessage(id ,message, hashedMessage) {
+function chatboxReceiveMessage(id ,encryptedmessage, hashedMessage) {
     //decrypt message
+    if (id == 1){ 
+        senderKey = askPrivateKey(2); //AG
+        receiverkey = privateKeyBob ; //B
+    }
+    else if(id == 2) {
+        senderKey = askPrivateKey(1); //BG
+        receiverkey = privateKeyAlice; //A
+    }
+    if(receiverkey == null || senderKey == null ){console.log("error while ecrypting, unknown ID");return;}
 
+    let sharedAESKey = generateAESKey(receiverkey,senderKey); //generateAESKey(A or B, AG or BG);
+
+    let message = decryptWithAes(encryptedmessage, sharedAESKey).toString();
     //✔ hash
     let hash = "another error occured"
     if(hashcode(message) == hashedMessage){
@@ -68,8 +99,22 @@ function chatboxReceiveMessage(id ,message, hashedMessage) {
     displayMessageReceiver(id, message, hash);
 }
 
-function chatboxReceiveImage(id ,filename , hashedMessage) {
+function chatboxReceiveImage(id ,encyrptedFilename , hashedMessage) {
     //decrypt message
+
+    if (id == 1){ 
+        senderKey = askPrivateKey(2); //AG
+        receiverkey = privateKeyBob ; //B
+    }
+    else if(id == 2) {
+        senderKey = askPrivateKey(1); //BG
+        receiverkey = privateKeyAlice; //A
+    }
+    if(receiverkey == null || senderKey == null ){console.log("error while ecrypting, unknown ID");return;}
+
+    let sharedAESKey = generateAESKey(receiverkey,senderKey); //generateAESKey(A or B, AG or BG);
+
+    let filename = decryptWithAes(encyrptedFilename, sharedAESKey).toString();
 
     //✔ hash
     let hash = "another error occured"
@@ -146,21 +191,38 @@ function n(pk ,G , mod=7){
     return Math.pow(G,pk) % mod;
 }
 
-function askPrivateKey(fromId,toId){
+function askPrivateKey(fromId){
+    let privK ="";
     if (fromId == 1){ 
-        let privK = privateKeyBob;
+        privK = privateKeyBob;
     }
-    else if(fromId = 2) {
-        let privK = privateKeyAlice;
+    else if(fromId == 2) {
+        privK = privateKeyAlice;
     }
     else{
-         return null
+        console.log("error while generating key");
+         return null;
+
     }
     return n(privK, decidedKey);
 }
 
-function AESencryptionMethod(key,message){
-    
+
+}
+
+{//AES
+function generateAESKey(senderKey,receiverkey){
+    return n(senderKey,receiverkey);
+}
+
+function encryptWithAes(message, key){
+    var encrypted = CryptoJS.AES.encrypt(message, "a"+ key);
+    return encrypted;
+}
+
+function decryptWithAes(message, key){
+    var decrypted = CryptoJS.AES.decrypt(message, "a" + key);
+    return decrypted.toString(CryptoJS.enc.Utf8);
 }
 
 }
