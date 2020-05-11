@@ -9,14 +9,14 @@
         <h2>Chat Messages</h2>
         <textarea name="textarea1" id="textarea1" class="textArea"></textarea>
         <button id="submit1" value="submit" onclick="ChatBoxMessage(1,2)"> submit</button>
-        <input type="file" accept="image/*" onchange="loadFile(event)">
+        <input type="file" id="fileUpload1" accept="image/*" onchange="loadFile(event)">
         <button id="submit1" value="submit" onclick="UploadMessage(1,2)"> submit</button>
     </div>
     <div class="chatbox2" id="chatbox2">
         <h2>Chat Messages</h2>
         <textarea name="textarea2" id="textarea2" class="textArea"></textarea>
         <button id="submit2" value="submit" onclick="ChatBoxMessage(2,1)"> submit</button>
-        <input type="file" accept="image/*" onchange="loadFile(event)">
+        <input type="file" id="fileUpload2" accept="image/*" onchange="loadFile(event)">
         <button id="submit1" value="submit" onclick="UploadMessage(2,1)"> submit</button>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
